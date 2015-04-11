@@ -1,0 +1,7 @@
+node_modules
+.DS_Store
+tmp
+source/*
+tmp/*
+*.mp4
+source/willywonka.mp4

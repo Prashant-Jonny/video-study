@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+  <head>
+    <title>VideoStudy</title>
+    <style>
+        body {
+            margin: 0px 0px;
+        }
+        #nav {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            background-color: #444;
+            padding: 10px;
+            z-index: 50;
+        }
+        #container {
+            margin-top: 30px;
+        }
+        button {
+            background-color: #444;
+            color: white;
+            display: inline-block;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            padding: 5px;
+            outline: 0px;
+        }
+        button:hover {
+            background-color: #444;
+        }
+        .frame {
+            display: inline-block;
+            width: 10%;
+            height: 100px;
+        }
+        .frame .inner {
+            -webkit-transition: all 250ms;
+            transition: all 250ms;
+            position: absolute;
+            height: 100px;
+            width: 10%;
+            margin-top: 50px;
+            opacity: 0;
+        }
+        .active {
+            margin-top: 0px !important;
+            opacity: 1 !important;
+        }
+    </style>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="text/javascript">
+
+        var frames = {};
+        var positions = 0;
+        var currentPosition = 0;
+
+        function ColorMatch(options) {
+          options = options||{};
+          this.tollerance = options.tollerance||this.tollerance;
+        }
+
+        ColorMatch.prototype = {
+          tollerance:15,
+          quickMatch:function (rgb1,rgb2){
+            var rgb_cmp = this.rgbRange(rgb2[0]||0,rgb2[1]||0,rgb2[2]||0),
+              r = rgb1[0]||0,
+              g = rgb1[1]||0,
+              b = rgb1[2]||0;
+            
+            
+            if(r>rgb_cmp.r1 && r<rgb_cmp.r2 && g>rgb_cmp.g1 && g<rgb_cmp.g2 && b>rgb_cmp.b1 && b<rgb_cmp.b2){
+              return true;
+            }
+            return false;
+          },
+          rgbRange: function (r,g,b){
+            var max = Math.max(r,g,b),
+                rOffset = Math.round((max-r)/3 > this.bubble?(max-r)/3:this.tollerance),
+                gOffset = Math.round((max-g)/3 > this.bubble?(max-g)/3:this.tollerance),
+                bOffset = Math.round((max-b)/3 > this.bubble?(max-b)/3:this.tollerance);
+            
+            res = {};
+            
+            res.r1 = (r-rOffset)>0?(r-rOffset):0;
+            res.r2 = (r+rOffset)<255?(r+rOffset):255;
+            
+            res.g1 = (g-rOffset)>0?(g-gOffset):0;
+            res.g2 = (g+rOffset)<255?(g+gOffset):255;
+            
+            res.b1 = (b-rOffset)>0?(b-rOffset):0;
+            res.b2 = (b+rOffset)<255?(b+rOffset):255;
+            
+            return res;
+          }
+        };
+        
+        $('#match').click(function(event) {
+            socket.emit('matchVideo');
+        });
+        
+        var updateColourOptions = function() {
+            $('.options').remove();
+            for (var i = 0; i <= positions; i = i + 1) {
+                $('#nav').append(
+                    '<button class="options" data-index="' + i + '">Select ' + i + '</button>'
+                );
+            }
+            $('.options').click(function(event) {
+                currentPosition = $(event.currentTarget).data('index');
+                for (var i in frames) {
+                    setFrameColour(i);
+                }
+            });
+        };
+
+        var setFrameColour = function(frame) {
+            var data = null;
+            for (var i = currentPosition + 0; i > -1; i = i - 1) {
+                if (typeof frames[frame][i] !== 'undefined') {
+                    data = frames[frame][i];
+                    break;
+                }
+            }
+            if (data == null) {
+                return;
+            }
+            $('#' + frame + ' .inner').css(
+                'backgroundColor',
+                'rgb(' +
+                    data.red + ', ' +
+                    data.green + ', ' +
+                    data.blue +
+                ')'
+            );
+        };
+
+        var createFrame = function(frame, data) {
+            frames[frame] = data;
+            $('#container').append(
+                $('<div id="' + frame + '" class="frame">' +
+                  '    <div class="inner">&nbsp;</div>&nbsp;' +
+                  '</div>'
+                )
+            );
+            setFrameColour(frame);
+            positions = Math.max(positions, data.length);
+            updateColourOptions();
+
+            setTimeout(
+                function() {
+                    $('#' + frame + ' .inner').addClass('active');
+                },
+                150
+            );
+        };
+
+        var socket = io();
+        socket.on('frame', createFrame);
+
+        $(document).ready(function() {
+            $('#process').click(function() {
+                socket.emit('processVideo');
+                return false;
+            });
+        });
+
+    </script>
+  </head>
+  <body>
+    <div id="nav">
+        <button id="process">Process Video</button>
+        <button id="match">Match Colours</button>
+    </div>
+    <div id="container"></div>
+  </body>
+</html>

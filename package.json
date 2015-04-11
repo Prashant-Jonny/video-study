@@ -1,0 +1,34 @@
+{
+  "name": "video-study",
+  "version": "1.0.0",
+  "description": "A vide decompiler and visual study tool.",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://ddibiase@github.com/ddibiase/video-study.git"
+  },
+  "keywords": [
+    "video",
+    "study",
+    "color",
+    "colour",
+    "decode",
+    "visualize"
+  ],
+  "author": "David Di Biase",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ddibiase/video-study/issues"
+  },
+  "homepage": "https://github.com/ddibiase/video-study",
+  "dependencies": {
+    "cloudcv": "git://github.com/BloodAxe/CloudCV.git",
+    "cloudcv-backend": "git://github.com/BloodAxe/CloudCVBackend",
+    "colormatch": "0.0.4",
+    "express": "^4.12.3",
+    "highlander": "0.0.6",
+    "lodash": "^3.6.0",
+    "neo-async": "^0.6.3",
+    "socket.io": "^1.3.5"
+  }
+}
