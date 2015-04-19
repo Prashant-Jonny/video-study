@@ -63,7 +63,7 @@ AVStudy.prototype.getFrameCount = function(callback) {
 
 AVStudy.prototype.getScreenshots = function(callback) {
 	var self = this;
-    this.interval = this.duration / this.options.count;
+	this.interval = 1;
     this.times = [];
     for (var i = 0; i <= this.duration; i = i + this.interval) {
     	this.times.push(Math.ceil(i));
@@ -170,7 +170,6 @@ AVStudy.prototype.processScreenshot = function(time, callback) {
 
 AVStudy.prototype.matchProcess = function() {
 	this.log('Matching processed');
-
 };
 
 AVStudy.prototype.finish = function() {
@@ -178,8 +177,7 @@ AVStudy.prototype.finish = function() {
 };
 
 var study = new AVStudy({
-	path: 'source/willywonka.mp4',
-	count: 500
+    path: 'source/willywonka.mp4'
 });
 
 var app = require('express')();
@@ -198,6 +196,6 @@ socket.on('connection', function(socket){
 	    study.startProcessing();
 	});
 });
-http.listen(8080, function(){
+http.listen(80, function(){
     console.log('Server connected');
 });
