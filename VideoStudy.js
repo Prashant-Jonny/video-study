@@ -196,6 +196,10 @@ socket.on('connection', function(socket) {
 	    study.startProcessing();
 	});
 });
+<<<<<<< HEAD
 http.listen(80, function() {
+=======
+http.listen(80, function(){
+>>>>>>> db8e4c52108dd98a5d8f6b5086b6011db9237470
     console.log('Server connected');
 });
