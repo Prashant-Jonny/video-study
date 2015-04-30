@@ -177,7 +177,9 @@ AVStudy.prototype.finish = function() {
 };
 
 var study = new AVStudy({
-    path: 'source/willywonka.mp4'
+    path:         '/Volumes/ddibiase-tb/VideoStudy/WillyWonka/willywonka.mp4',
+    outputFolder: '/Volumes/ddibiase-tb/VideoStudy/WillyWonka/frames',
+    outputFile:   '/Volumes/ddibiase-tb/VideoStudy/WillyWonka/framedata.txt'
 });
 
 var app = require('express')();
@@ -197,6 +199,6 @@ socket.on('connection', function(socket) {
 	});
 });
 
-http.listen(80, function() {
+http.listen(8080, function() {
     console.log('Server connected');
 });
